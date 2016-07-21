@@ -1,0 +1,68 @@
+
+<!DOCTYPE html>
+<html>
+<body >
+<div style="color: #1ec503; background-color:black; "   >
+        <b><h1>Welcome to Anonymous</h1></b> <br><h3> Your opinions matter.</h3.
+<br>
+</div>
+<?php
+date_default_timezone_set('UTC');
+mysql_connect("localhost", "root", "valencebond") or die(mysql_error());
+mysql_select_db("mydb") or die(mysql_error());
+$result = mysql_query("SELECT * FROM blog")
+or die(mysql_error());
+
+$numrows = mysql_num_rows($result);
+
+if($numrows == 0){
+echo "No topics to show";
+}
+else{
+$temp=0;
+while($row = mysql_fetch_array( $result ))
+
+{
+$temp++;
+$text=$row["content"];
+$date=$row["reg_date"];
+echo "<p>Posted on: $date</p>";
+echo "<p> $text </p>";
+$result1 = mysql_query("SELECT * FROM comments WHERE id= '$temp' ")
+or die(mysql_error());
+
+$numrows1 = mysql_num_rows($result1);
+
+if($numrows1 == 0){
+	echo "No comments";
+	}
+else{
+	while($row1 = mysql_fetch_array( $result1 ))
+	{     
+    		$comm = $row1['comments'];   
+    		echo "$comm";
+		
+    }
+ }
+?>
+<form action="addcomment.php" method="post">
+<input type="hidden" name="id" value="<?php echo $temp; ?>" >  
+<input type="text" name="s">
+<input type="submit" value="Add comment">
+</form>
+<?php
+}
+
+}
+
+mysql_close();
+?>
+<p>
+<form action="blogpost.php" method="post" >
+<input type="text" name="q"  style="height:200px; width:400px; ">
+<br>
+<input type="submit" value="Add new post">
+</form>
+</body>
+</html>
+
